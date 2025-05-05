@@ -1,24 +1,25 @@
 version: 2.1
 
 jobs:
-  neofetch-job:
-    docker:
-      - image: ubuntu:latest
+  build: # name of your job
+    machine: # executor type
+      image: ubuntu-2204:current # Ubuntu 22.04 virtual machine
     steps:
       - run:
-          name: Update system and check disk space
-          command: |
-            apt-get update
-            df -h
+          name: Check Disk Space
+          command: df -h # Display disk space usage
       - run:
-          name: Install neofetch
-          command: apt-get install -y neofetch
+          name: Update System
+          command: sudo apt-get update
       - run:
-          name: Run neofetch
-          command: neofetch
+          name: Install Neofetch
+          command: sudo apt-get install -y neofetch
+      - run:
+          name: Run Neofetch
+          command: neofetch # Display system information
 
 workflows:
   version: 2
-  neofetch-workflow:
+  build-workflow:
     jobs:
-      - neofetch-job
+      - build
