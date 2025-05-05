@@ -1,0 +1,29 @@
+version: 2.1
+
+executors:
+  machine-executor:
+    machine:
+      image: ubuntu-2004:2023.04.1  # Ubuntu 20.04 image
+    working_directory: ~/project
+
+jobs:
+  neofetch-job:
+    executor: machine-executor
+    steps:
+      - run:
+          name: Check disk space
+          command: df -h
+      - run:
+          name: Update system and install neofetch
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y neofetch
+      - run:
+          name: Run neofetch
+          command: neofetch
+
+workflows:
+  version: 2
+  neofetch-workflow:
+    jobs:
+      - neofetch-job
