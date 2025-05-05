@@ -15,8 +15,11 @@ jobs:
           name: Install Neofetch
           command: sudo apt-get install -y neofetch
       - run:
-          name: Run Neofetch
-          command: neofetch # Display system information
+          name: Run Neofetch and Save Output
+          command: neofetch > output.txt # Save `neofetch` output to a file
+      - store_artifacts:
+          path: output.txt
+          destination: neofetch-output # Save as an artifact with a destination name
 
 workflows:
   version: 2
