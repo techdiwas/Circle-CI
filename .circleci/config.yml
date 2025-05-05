@@ -21,9 +21,43 @@ jobs:
       - run:
           name: Run neofetch
           command: neofetch
-
+  playwright-e2e:
+    executor: machine-executor
+    steps:
+      - checkout
+      - run:
+          name: Install Node.js (via nvm)
+          command: |
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \ . "$NVM_DIR/nvm.sh"
+            nvm install --lts
+            nvm use --lts
+            node -v
+      - run:
+          name: Install dependencies
+          command: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \ . "$NVM_DIR/nvm.sh"
+            npm ci || npm install
+      - run:
+          name: Install Playwright browsers
+          command: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \ . "$NVM_DIR/nvm.sh"
+            npx playwright install --with-deps
+      - run:
+          name: Run Playwright end-to-end tests
+          command: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \ . "$NVM_DIR/nvm.sh"
+            npx playwright test
+      - store_artifacts:
+          path: playwright-report
+          destination: playwright-report
 workflows:
   version: 2
   neofetch-workflow:
     jobs:
       - neofetch-job
+      - playwright-e2e
